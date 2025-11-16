@@ -42,12 +42,27 @@ class LLMOrchestrator:
     async def run(self, agent: str, prompt: str) -> Dict[str, Any]:
         if not await self.tokens.reserve(prompt):
             return {"error": "token limit"}
+
+        # Embed the prompt and query the database for context
+        prompt_embedding = await self.llm.embed(prompt)
+        db_results = await self.db.query(prompt_embedding)
+
+        # Format the context
+        context = ""
+        if db_results and db_results.get("documents"):
+            context += "Relevant Information:\n"
+            for doc in db_results["documents"][0]:
+                context += f"- {doc}\n"
+
+        # Prepend context to the prompt
+        final_prompt = f"{context}\nUser's Request: {prompt}"
+
         a = self.agents.agents.get(agent)
         if not a:
             return {"error": "unknown agent"}
         await self.sessions.compress(agent, a.get("memory", ""))
         try:
-            out = await self.llm.generate(prompt)
+            out = await self.llm.generate(final_prompt)
             return {"agent": agent, "reply": out}
         finally:
             await self.tokens.release(prompt)
