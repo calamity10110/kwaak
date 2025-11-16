@@ -1,0 +1,10 @@
+{
+  "project_root": "examples/simple_project",
+  "system_root": ".",
+  "llm_provider": "local",
+  "provider_settings": {},
+  "max_tokens": 4096,
+  "auto_approve_reversible": true,
+  "persist_memory": true,
+  "session_timeout": 3600
+}
