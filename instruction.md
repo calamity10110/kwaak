@@ -1,14 +1,26 @@
 
-# LLM Orchestrator Library: Installation and Usage
+# Kwaak + LLM Orchestrator: Installation and Usage
 
-This document provides detailed instructions on how to set up and run the LLM Orchestrator library.
+This document provides detailed instructions on how to set up and run the integrated Kwaak application with the Python-based LLM Orchestrator.
 
 ## 1. Installation
 
-First, you need to install the required Python packages. You can do this by installing the packages listed in `requirements.txt`:
+This project has two parts: a Rust-based TUI application (Kwaak) and a Python-based LLM orchestrator. You will need to install dependencies for both.
+
+### Python Dependencies
+
+Install the required Python packages using pip:
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Rust Dependencies
+
+You will need to have the Rust toolchain installed. You can then build the Kwaak application using Cargo:
+
+```bash
+cargo build
 ```
 
 ## 2. Configuration
@@ -23,8 +35,6 @@ The easiest way to configure the LLM provider is to use the `configure_provider.
 python3 scripts/configure_provider.py
 ```
 
-This script will guide you through selecting and configuring your desired LLM provider.
-
 ### Manual Configuration
 
 You can also configure the provider manually by editing `examples/simple_project/config.json`.
@@ -33,51 +43,24 @@ You can also configure the provider manually by editing `examples/simple_project
 
 You can choose between two LLM providers: `local` and `openai`.
 
-##### Local Provider
-
-The `local` provider is a simple, offline provider that is useful for testing and development. To use it, set the `llm_provider` to `"local"` in your `config.json`:
-
-```json
-{
-  "llm_provider": "local"
-}
-```
-
 ##### OpenAI Provider
 
-The `openai` provider uses the OpenAI API to generate responses and embeddings. To use it, you need to:
+To use the `openai` provider, you need to provide your OpenAI API key. Create a `.env` file in the root of the project (you can copy `.env.example`) and add your API key:
 
-1.  **Set the `llm_provider` to `"openai"`** in your `config.json`.
-2.  **Provide your OpenAI API key.** Create a `.env` file in the root of the project (you can copy `.env.example`) and add your API key:
-
-    ```
-    OPENAI_API_KEY="your-api-key"
-    ```
-
-3.  **Configure the model (optional).** You can specify which OpenAI model to use in the `provider_settings` section of your `config.json`. If you don't specify a model, it will default to `"gpt-3.5-turbo"`.
-
-    ```json
-    {
-      "llm_provider": "openai",
-      "provider_settings": {
-        "model": "gpt-4"
-      }
-    }
-    ```
-
-## 3. Running the Example
-
-An example project is provided in the `examples/simple_project` directory. To run it, execute the `run_simple_project.py` script from the root of the project:
-
-```bash
-PYTHONPATH=. python3 examples/run_simple_project.py
+```
+OPENAI_API_KEY="your-api-key"
 ```
 
-**Note:** You must set the `PYTHONPATH` to `.` for the script to be able to find the `orchestrator` library.
+## 3. Running the Application
 
-When you run the example, it will:
+To run the integrated application, you will start the Kwaak TUI. Kwaak will automatically run the Python orchestrator in the background.
 
-1.  Initialize the orchestrator with the settings from `examples/simple_project/config.json`.
-2.  Create a `db` directory in `examples/simple_project` to store the project's memory.
-3.  Create an `agent.md` file in `examples/simple_project` if one doesn't already exist.
-4.  Run a simple agent task and print the response to the console, with real-time feedback on the agent's actions.
+```bash
+cargo run
+```
+
+When you start a new chat in the Kwaak TUI, it will:
+
+1.  Spawn the Python orchestrator service.
+2.  Send the prompt to the orchestrator.
+3.  Receive the response from the orchestrator and display it in the chat.

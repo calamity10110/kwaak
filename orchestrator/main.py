@@ -21,6 +21,7 @@ class LLMOrchestrator:
         self.llm = self._init_llm_provider()
         self.db = StructuredDB("memory", cfg.project_root + "/db")
         self.agents = AgentManager(cfg.project_root, cfg.system_root)
+        self.agents.load()  # <-- ADDED THIS LINE
         self.tools = ToolManager()
         self.tokens = TokenBudget(cfg.max_tokens)
         self.sessions = SessionManager(self.db)
@@ -47,18 +48,15 @@ class LLMOrchestrator:
             self.feedback.stop_spinner(False, "Token limit reached.")
             return {"error": "token limit"}
 
-        # Embed the prompt and query the database for context
         prompt_embedding = await self.llm.embed(prompt)
         db_results = await self.db.query(prompt_embedding)
 
-        # Format the context
         context = ""
         if db_results and db_results.get("documents"):
             context += "Relevant Information:\n"
             for doc in db_results["documents"][0]:
                 context += f"- {doc}\n"
 
-        # Prepend context to the prompt
         final_prompt = f"{context}\nUser's Request: {prompt}"
 
         a = self.agents.agents.get(agent)

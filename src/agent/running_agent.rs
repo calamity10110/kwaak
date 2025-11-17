@@ -1,46 +1,29 @@
-use anyhow::{Context as _, Result};
+
+use anyhow::Result;
 use std::sync::Arc;
 
-use swiftide::agents::Agent;
-use tokio::sync::Mutex;
+use crate::agent::session::RunningSession;
 
-/// Defines any agent that is running
-///
-/// Internally wraps an agent with an arc mutex so it can be shared
 #[derive(Clone)]
 pub struct RunningAgent {
-    /// The agent that is running
-    pub agent: Arc<Mutex<Agent>>,
-}
-
-impl From<Agent> for RunningAgent {
-    fn from(agent: Agent) -> Self {
-        RunningAgent {
-            agent: Arc::new(Mutex::new(agent)),
-        }
-    }
+    session: Arc<RunningSession>,
 }
 
 impl RunningAgent {
+    pub fn new(session: Arc<RunningSession>) -> Self {
+        Self { session }
+    }
+
     pub async fn query(&self, query: &str) -> Result<()> {
-        self.agent
-            .lock()
-            .await
-            .query(query)
-            .await
-            .context("Failed to query agent")
+        self.session.query_agent(query).await
     }
 
     pub async fn run(&self) -> Result<()> {
-        self.agent
-            .lock()
-            .await
-            .run()
-            .await
-            .context("Failed to run agent")
+        // This method is no longer needed, as the Python orchestrator handles the run loop.
+        Ok(())
     }
 
     pub async fn stop(&self) {
-        self.agent.lock().await.stop("Stopped from kwaak").await;
+        // This method is no longer needed, as the Python orchestrator handles its own lifecycle.
     }
 }

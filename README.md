@@ -1,26 +1,24 @@
 
-# LLM Orchestrator Library
+# Kwaak + LLM Orchestrator
 
-The LLM Orchestrator Library is a fully modular, async, extensible, typed, secure, multi-agent, and multi-LLM framework designed to provide a robust foundation for building sophisticated LLM-powered applications.
+This project integrates the Rust-based Kwaak TUI with a Python-based LLM Orchestrator library, creating a powerful and flexible framework for building AI-powered applications.
 
-## Vision
+## Architecture
 
-Our goal is to create a comprehensive orchestration framework that supports:
+The integrated application uses a two-process architecture:
 
-- **Multi-Agent Systems:** With primary and minion agents that can be activated and deactivated as needed.
-- **Structured Memory:** Using a unified database for memory, tools, agent info, and project metadata.
-- **Retrieval-Augmented Generation (RAG):** To provide LLMs with relevant context for more informed responses.
-- **Cloud and Local LLMs:** With support for providers like OpenAI and local models.
-- **A Rich TUI:** With VSCode-style panels for a seamless user experience.
+-   **Kwaak (Rust):** The main application, which provides the terminal-based user interface (TUI).
+-   **LLM Orchestrator (Python):** A separate process that is spawned by Kwaak to handle all agent-related tasks, including LLM calls, tool execution, and memory management.
 
-## Key Features (Implemented)
+This architecture allows us to leverage the strengths of both Rust (for a fast and responsive TUI) and Python (for a rich and flexible AI ecosystem).
 
-- **Modular Architecture:** The library is structured into logical sub-packages for core components, agents, tools, storage, LLM providers, and project management.
-- **Async-First Design:** All LLM calls, DB queries, and tool executions are asynchronous for high performance.
-- **Cloud and Local LLM Support:** The library supports both a simple `local` LLM provider for testing and an `openai` provider for cloud-based generation and embeddings.
-- **Structured RAG:** The orchestrator can retrieve relevant information from its memory to provide context to the LLM, resulting in more informed responses.
-- **Enhanced Console Feedback:** The orchestrator provides real-time feedback on agent actions, with spinners for in-progress tasks and success or failure indicators.
+## Key Features
+
+- **Modular and Extensible:** The Python orchestrator is designed to be highly modular, making it easy to add new agents, tools, and LLM providers.
+- **Async-First Design:** The orchestrator is built on an async-first architecture for high performance.
+- **Cloud and Local LLM Support:** The orchestrator supports both local and cloud-based LLMs, including OpenAI.
+- **Structured RAG:** The orchestrator uses Retrieval-Augmented Generation (RAG) to provide LLMs with relevant context, resulting in more informed responses.
 
 ## Getting Started
 
-For detailed instructions on how to install, configure, and run the LLM Orchestrator library, please see [instruction.md](instruction.md).
+For detailed instructions on how to install, configure, and run the integrated application, please see [instruction.md](instruction.md).
