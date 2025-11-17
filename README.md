@@ -19,6 +19,7 @@ Our goal is to create a comprehensive orchestration framework that supports:
 - **Async-First Design:** All LLM calls, DB queries, and tool executions are asynchronous for high performance.
 - **Cloud and Local LLM Support:** The library supports both a simple `local` LLM provider for testing and an `openai` provider for cloud-based generation and embeddings.
 - **Structured RAG:** The orchestrator can retrieve relevant information from its memory to provide context to the LLM, resulting in more informed responses.
+- **Enhanced Console Feedback:** The orchestrator provides real-time feedback on agent actions, with spinners for in-progress tasks and success or failure indicators.
 
 ## Getting Started
 

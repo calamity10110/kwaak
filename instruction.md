@@ -5,21 +5,35 @@ This document provides detailed instructions on how to set up and run the LLM Or
 
 ## 1. Installation
 
-First, you need to install the required Python packages. You can do this using pip:
+First, you need to install the required Python packages. You can do this by installing the packages listed in `requirements.txt`:
 
 ```bash
-pip install msgpack chromadb openai
+pip install -r requirements.txt
 ```
 
 ## 2. Configuration
 
 The orchestrator's behavior is configured through a `config.json` file. An example configuration is provided in `examples/simple_project/config.json`.
 
-### LLM Providers
+### Using the Configuration Script
+
+The easiest way to configure the LLM provider is to use the `configure_provider.py` script:
+
+```bash
+python3 scripts/configure_provider.py
+```
+
+This script will guide you through selecting and configuring your desired LLM provider.
+
+### Manual Configuration
+
+You can also configure the provider manually by editing `examples/simple_project/config.json`.
+
+#### LLM Providers
 
 You can choose between two LLM providers: `local` and `openai`.
 
-#### Local Provider
+##### Local Provider
 
 The `local` provider is a simple, offline provider that is useful for testing and development. To use it, set the `llm_provider` to `"local"` in your `config.json`:
 
@@ -29,15 +43,15 @@ The `local` provider is a simple, offline provider that is useful for testing an
 }
 ```
 
-#### OpenAI Provider
+##### OpenAI Provider
 
 The `openai` provider uses the OpenAI API to generate responses and embeddings. To use it, you need to:
 
 1.  **Set the `llm_provider` to `"openai"`** in your `config.json`.
-2.  **Provide your OpenAI API key.** The library will look for the `OPENAI_API_KEY` environment variable. You can set it in your shell like this:
+2.  **Provide your OpenAI API key.** Create a `.env` file in the root of the project (you can copy `.env.example`) and add your API key:
 
-    ```bash
-    export OPENAI_API_KEY="your-api-key"
+    ```
+    OPENAI_API_KEY="your-api-key"
     ```
 
 3.  **Configure the model (optional).** You can specify which OpenAI model to use in the `provider_settings` section of your `config.json`. If you don't specify a model, it will default to `"gpt-3.5-turbo"`.
@@ -66,4 +80,4 @@ When you run the example, it will:
 1.  Initialize the orchestrator with the settings from `examples/simple_project/config.json`.
 2.  Create a `db` directory in `examples/simple_project` to store the project's memory.
 3.  Create an `agent.md` file in `examples/simple_project` if one doesn't already exist.
-4.  Run a simple agent task and print the response to the console.
+4.  Run a simple agent task and print the response to the console, with real-time feedback on the agent's actions.

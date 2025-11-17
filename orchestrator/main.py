@@ -13,6 +13,7 @@ from orchestrator.core.session import SessionManager
 from orchestrator.core.permissions import PermissionManager
 from orchestrator.tools.bash import BashTool
 from orchestrator.tools.metadata import ToolMetadata
+from orchestrator.core.feedback import ConsoleFeedback
 
 class LLMOrchestrator:
     def __init__(self, cfg: OrchestratorConfig):
@@ -24,6 +25,7 @@ class LLMOrchestrator:
         self.tokens = TokenBudget(cfg.max_tokens)
         self.sessions = SessionManager(self.db)
         self.perms = PermissionManager()
+        self.feedback = ConsoleFeedback()
         self._core_tools()
 
     def _init_llm_provider(self) -> LLMProvider:
@@ -40,7 +42,9 @@ class LLMOrchestrator:
         )
 
     async def run(self, agent: str, prompt: str) -> Dict[str, Any]:
+        self.feedback.start_spinner(f"Agent '{agent}' is thinking...")
         if not await self.tokens.reserve(prompt):
+            self.feedback.stop_spinner(False, "Token limit reached.")
             return {"error": "token limit"}
 
         # Embed the prompt and query the database for context
@@ -59,10 +63,12 @@ class LLMOrchestrator:
 
         a = self.agents.agents.get(agent)
         if not a:
+            self.feedback.stop_spinner(False, f"Agent '{agent}' not found.")
             return {"error": "unknown agent"}
         await self.sessions.compress(agent, a.get("memory", ""))
         try:
             out = await self.llm.generate(final_prompt)
+            self.feedback.stop_spinner(True, f"Agent '{agent}' generated a response.")
             return {"agent": agent, "reply": out}
         finally:
             await self.tokens.release(prompt)

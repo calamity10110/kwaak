@@ -1,0 +1,4 @@
+msgpack
+chromadb
+openai
+python-dotenv

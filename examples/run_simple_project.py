@@ -1,9 +1,13 @@
 
 import asyncio
 import os
+from dotenv import load_dotenv
 from orchestrator.main import LLMOrchestrator
 from orchestrator.core.config import OrchestratorConfig
 from orchestrator.project.initializer import ProjectInitializer
+
+# Load environment variables from .env file
+load_dotenv()
 
 async def main():
     # Correct the path to be relative to the script's location
