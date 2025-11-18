@@ -1,3 +1,4 @@
+
 use config::{Config as ConfigRs, Environment, File};
 use std::{
     path::{Path, PathBuf},
@@ -8,6 +9,8 @@ use std::{
 use anyhow::{Context as _, Result};
 use serde::{Deserialize, Serialize};
 use swiftide::integrations::treesitter::SupportedLanguages;
+
+use crate::orchestrator::config::OrchestratorConfig;
 
 use super::{CommandConfiguration, LLMConfiguration, LLMConfigurations};
 use super::{api_key::ApiKey, tools::Tools};
@@ -31,6 +34,9 @@ pub struct Config {
     pub cache_dir: PathBuf,
     #[serde(default = "default_log_dir")]
     pub log_dir: PathBuf,
+
+    #[serde(default)]
+    pub orchestrator: OrchestratorConfig,
 
     /// The agent model to use by default in chats
     #[serde(default)]
